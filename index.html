@@ -67,6 +67,12 @@
       margin: 0 auto 1em auto;
       text-align: center;
     }
+    }
+    /* Texto informativo más pequeño */
+    p.info-small {
+      font-size: 0.9em; /* puedes cambiar a 12px si prefieres fijo */
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -122,11 +128,15 @@
       <td class="result" id="costoFinanciero"></td>
     </tr>
     <tr>
-      <th>Monto a recibir</th>
+      <th>Monto transferido</th>
       <td class="result" id="montoRecibir"></td>
     </tr>
   </table>
 
+  <p class="info info-small">
+    Ten en cuenta que su banco le puede aplicar comisiones por recibir los ingresos.
+  </p>
+  
   <script>
     function calcular() {
       const spred = 2.75;
