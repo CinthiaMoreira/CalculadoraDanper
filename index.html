@@ -160,4 +160,29 @@
 
       const fechaVencimiento = new Date(fechaInput);
       const hoy = new Date();
-      const diasAnticipados = Math.max(0
+      const diasAnticipados = Math.max(0, Math.floor((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24)));
+
+      const tasaProporcional = tasaAnual * diasAnticipados / 360;
+      const montoFactura = parseFloat(montoInput) || 0;
+      const costoFinanciero = montoFactura * (tasaProporcional / 100);
+      const montoRecibir = montoFactura - costoFinanciero;
+
+      document.getElementById('diasAnticipados').textContent = diasAnticipados;
+      document.getElementById('tasaProporcional').textContent = tasaProporcional.toFixed(2) + '%';
+      document.getElementById('costoFinanciero').textContent = costoFinanciero.toFixed(2);
+      document.getElementById('montoRecibir').textContent = montoRecibir.toFixed(2);
+    }
+
+    ['sofr', 'fechaVencimiento', 'montoFactura'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calcular);
+      document.getElementById(id).addEventListener('change', calcular);
+    });
+
+    window.onload = () => {
+      document.getElementById('fechaVencimiento').value = '';
+      document.getElementById('montoFactura').value = '';
+      calcular();
+    };
+  </script>
+</body>
+</html>
