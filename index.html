@@ -88,7 +88,7 @@
     </tr>
     <tr>
       <th>SOFR del día</th>
-      <td><input type="number" step="0.01" id="sofr" value="0" /></td>
+      <td><input type="number" step="0.01" id="sofr" value="3.93" /></td>
     </tr>
     <tr>
       <th>Tasa Anual</th>
@@ -97,9 +97,12 @@
   </table>
 
   <p class="info">
-    La tasa SOFR se actualiza automáticamente desde la <a href="https://www.newyorkfed.org/markets/reference-rates/sofr" target="_blank" rel="noopener noreferrer">Fed de Nueva York</a>.
+    Consulta la tasa SOFR actual en 
+    <a href="https://www.global-rates.com/es/tipos-de-interes/cme-term-sofr/2/term-sofr-interes-3-meses" target="_blank" rel="noopener noreferrer">
+      global-rates.com
+    </a> y actualízala manualmente si es necesario.
   </p>
-  
+
   <!-- Segunda tabla azul: Fecha de vencimiento y monto de factura -->
   <table class="tabla-azul">
     <tr>
@@ -135,20 +138,8 @@
   <p class="info info-small">
     Nota: Su banco puede aplicar comisiones adicionales por la recepción de los fondos.
   </p>
-  
-  <script>
-    async function actualizarSOFR() {
-      try {
-        const resp = await fetch("https://markets.newyorkfed.org/api/rates/secured/sofr/last/1.json");
-        const data = await resp.json();
-        const sofr = data.refRates[0].percentRate; // valor SOFR más reciente
-        document.getElementById('sofr').value = sofr;
-        calcular(); // recalcular con la tasa actualizada
-      } catch (error) {
-        console.error("Error al obtener la SOFR:", error);
-      }
-    }
 
+  <script>
     function calcular() {
       const spred = 2.75;
       const sofr = parseFloat(document.getElementById('sofr').value) || 0;
@@ -159,6 +150,7 @@
       const montoInput = document.getElementById('montoFactura').value;
 
       if (!fechaInput || !montoInput) {
+        // Vaciar resultados si falta fecha o monto
         document.getElementById('diasAnticipados').textContent = '';
         document.getElementById('tasaProporcional').textContent = '';
         document.getElementById('costoFinanciero').textContent = '';
@@ -168,29 +160,4 @@
 
       const fechaVencimiento = new Date(fechaInput);
       const hoy = new Date();
-      const diasAnticipados = Math.max(0, Math.floor((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24)));
-
-      const tasaProporcional = tasaAnual * diasAnticipados / 360;
-      const montoFactura = parseFloat(montoInput) || 0;
-      const costoFinanciero = montoFactura * (tasaProporcional / 100);
-      const montoRecibir = montoFactura - costoFinanciero;
-
-      document.getElementById('diasAnticipados').textContent = diasAnticipados;
-      document.getElementById('tasaProporcional').textContent = tasaProporcional.toFixed(2) + '%';
-      document.getElementById('costoFinanciero').textContent = costoFinanciero.toFixed(2);
-      document.getElementById('montoRecibir').textContent = montoRecibir.toFixed(2);
-    }
-
-    ['sofr', 'fechaVencimiento', 'montoFactura'].forEach(id => {
-      document.getElementById(id).addEventListener('input', calcular);
-      document.getElementById(id).addEventListener('change', calcular);
-    });
-
-    window.onload = () => {
-      document.getElementById('fechaVencimiento').value = '';
-      document.getElementById('montoFactura').value = '';
-      actualizarSOFR(); // cargar la SOFR al abrir
-    };
-  </script>
-</body>
-</html>
+      const diasAnticipados = Math.max(0
