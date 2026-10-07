@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -130,6 +131,10 @@
       <td class="result" id="costoFinanciero"></td>
     </tr>
     <tr>
+      <th>Comisión bancaria</th>
+      <td class="result" id="comisionBancaria"></td>
+    </tr>
+    <tr>
       <th>Monto transferido</th>
       <td class="result" id="montoRecibir"></td>
     </tr>
@@ -144,7 +149,9 @@
       const spred = 2.75;
       const sofr = parseFloat(document.getElementById('sofr').value) || 0;
       const tasaAnual = spred + sofr;
-      document.getElementById('tasaAnualText').textContent = tasaAnual.toFixed(2) + '%';
+
+      document.getElementById('tasaAnualText').textContent =
+        tasaAnual.toFixed(2) + '%';
 
       const fechaInput = document.getElementById('fechaVencimiento').value;
       const montoInput = document.getElementById('montoFactura').value;
@@ -154,23 +161,52 @@
         document.getElementById('diasAnticipados').textContent = '';
         document.getElementById('tasaProporcional').textContent = '';
         document.getElementById('costoFinanciero').textContent = '';
+        document.getElementById('comisionBancaria').textContent = '';
         document.getElementById('montoRecibir').textContent = '';
         return;
       }
 
       const fechaVencimiento = new Date(fechaInput);
       const hoy = new Date();
-      const diasAnticipados = Math.max(0, Math.floor((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24)));
 
-      const tasaProporcional = tasaAnual * diasAnticipados / 360;
-      const montoFactura = parseFloat(montoInput) || 0;
-      const costoFinanciero = montoFactura * (tasaProporcional / 100);
-      const montoRecibir = montoFactura - costoFinanciero;
+      const diasAnticipados = Math.max(
+        0,
+        Math.floor(
+          (fechaVencimiento - hoy) / (1000 * 60 * 60 * 24)
+        )
+      );
 
-      document.getElementById('diasAnticipados').textContent = diasAnticipados;
-      document.getElementById('tasaProporcional').textContent = tasaProporcional.toFixed(2) + '%';
-      document.getElementById('costoFinanciero').textContent = costoFinanciero.toFixed(2);
-      document.getElementById('montoRecibir').textContent = montoRecibir.toFixed(2);
+      const tasaProporcional =
+        tasaAnual * diasAnticipados / 360;
+
+      const montoFactura =
+        parseFloat(montoInput) || 0;
+
+      const costoFinanciero =
+        montoFactura * (tasaProporcional / 100);
+
+      // Comisión bancaria fija
+      const comisionBancaria = 15;
+
+      // Monto final después de descontar costo financiero
+      // y comisión bancaria
+      const montoRecibir =
+        montoFactura - costoFinanciero - comisionBancaria;
+
+      document.getElementById('diasAnticipados').textContent =
+        diasAnticipados;
+
+      document.getElementById('tasaProporcional').textContent =
+        tasaProporcional.toFixed(2) + '%';
+
+      document.getElementById('costoFinanciero').textContent =
+        costoFinanciero.toFixed(2) + ' USD';
+
+      document.getElementById('comisionBancaria').textContent =
+        comisionBancaria.toFixed(2) + ' USD';
+
+      document.getElementById('montoRecibir').textContent =
+        montoRecibir.toFixed(2) + ' USD';
     }
 
     ['sofr', 'fechaVencimiento', 'montoFactura'].forEach(id => {
@@ -186,3 +222,4 @@
   </script>
 </body>
 </html>
+```
